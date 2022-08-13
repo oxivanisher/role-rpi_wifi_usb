@@ -8,7 +8,7 @@
     state: mounted
     src: /dev/mmcblk0p1
     fstype: vfat
-  changed_when: False
+  changed_when: false
 
 - name: enable usb driver in config.txt
   ansible.builtin.lineinfile:
@@ -29,7 +29,7 @@
     share_file: "{{ usb_share_file }}"
 
 - name: "check if {{ usb_share_file }} file exists"
-  stat:
+  ansible.builtin.stat:
     path: "{{ share_file }}"
   register: share_file_check
 
@@ -88,5 +88,5 @@
 - name: enable and start the usb_share_watchdog.service
   ansible.builtin.systemd:
     name: usb_share_watchdog.service
-    enabled: yes
+    enabled: true
     state: started
