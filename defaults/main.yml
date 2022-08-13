@@ -1,2 +1,6 @@
 ---
-# defaults file for rpi_wifi_usb
+
+usb_share_file: /piusb.bin
+usb_share_space: 4G
+usb_share_path: /mnt/wifi_usb_share
+usb_share_watchdog_path: /opt/rpi_wifi_usb_watchdog
