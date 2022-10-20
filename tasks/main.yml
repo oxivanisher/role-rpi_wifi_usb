@@ -2,7 +2,7 @@
 # source: https://magpi.raspberrypi.org/articles/pi-zero-w-smart-usb-flash-drive
 
 # ensure mounted boot
-- name: mount boot
+- name: Mount boot
   ansible.posix.mount:
     path: /boot
     state: mounted
@@ -10,38 +10,38 @@
     fstype: vfat
   changed_when: false
 
-- name: enable usb driver in config.txt
+- name: Enable usb driver in config.txt
   ansible.builtin.lineinfile:
     path: /boot/config.txt
     regexp: '^dtoverlay=dwc2'
     line: dtoverlay=dwc2
-  notify: reboot required
+  notify: Reboot required
 
-- name: automatically load module
+- name: Automatically load module
   ansible.builtin.lineinfile:
     path: /etc/modules
     regexp: '^dwc2'
     line: dwc2
-  notify: reboot required
+  notify: Reboot required
 
-- name: set usb_share_file variable
+- name: Set usb_share_file variable
   ansible.builtin.set_fact:
     share_file: "{{ usb_share_file }}"
 
-- name: "check if {{ usb_share_file }} file exists"
+- name: "Check if file exists: {{ usb_share_file }}"
   ansible.builtin.stat:
     path: "{{ share_file }}"
   register: share_file_check
 
-- name: "create {{ usb_share_file }} file with {{ usb_share_space }} size"
+- name: "Create {{ usb_share_file }} file with size {{ usb_share_space }}"
   ansible.builtin.command: fallocate -l {{ usb_share_space }} {{ usb_share_file }}
   when: not share_file_check.stat.exists
 
-- name: "format the {{ usb_share_file }} file to fat32"
+- name: "Format the file to fat32: {{ usb_share_file }} "
   ansible.builtin.command: mkdosfs {{ usb_share_file }} -F 32 -I -n WIFI-USB
   when: not share_file_check.stat.exists
 
-- name: "ensure {{ usb_share_file }} mount"
+- name: "Ensure mount {{ usb_share_file }}"
   ansible.posix.mount:
     path: "{{ usb_share_path }}"
     src: "{{ usb_share_file }}"
@@ -49,18 +49,18 @@
     opts: users,umask=000
     state: mounted
 
-- name: ensure pip3 is installed
+- name: Ensure pip3 is installed
   ansible.builtin.package:
     name: python3-pip
     state: present
 
 # this is somehow not working ... installing manually works ?!?
-# - name: install watchdog python3 lib
+# - name: Install watchdog python3 lib
 #   ansible.builtin.pip:
 #     name: watchdog
 #     executable: pip3
 
-- name: ensuring watchdog folder
+- name: Ensuring watchdog folder
   ansible.builtin.file:
     state: directory
     path: "{{ usb_share_watchdog_path }}"
@@ -68,7 +68,7 @@
     group: root
     mode: 0755
 
-- name: deploy watchdog script
+- name: Deploy watchdog script
   ansible.builtin.template:
     src: usb_share_watchdog.py.jinja2
     dest: "{{ usb_share_watchdog_path }}/usb_share_watchdog.py"
@@ -76,16 +76,16 @@
     group: root
     mode: '0755'
 
-- name: deploy watchdog systemd service unit
+- name: Deploy watchdog systemd service unit
   ansible.builtin.template:
     src: usb_share_watchdog.service.jinja2
     dest: /etc/systemd/system/usb_share_watchdog.service
     owner: root
     group: root
     mode: '0644'
-  notify: reload systemd
+  notify: Reload systemd
 
-- name: enable and start the usb_share_watchdog.service
+- name: Enable and start the usb_share_watchdog.service
   ansible.builtin.systemd:
     name: usb_share_watchdog.service
     enabled: true
