@@ -33,11 +33,11 @@
     path: "{{ share_file }}"
   register: share_file_check
 
-- name: "Create {{ usb_share_file }} file with size {{ usb_share_space }}"
+- name: "Create the file with size {{ usb_share_space }}"
   ansible.builtin.command: fallocate -l {{ usb_share_space }} {{ usb_share_file }}
   when: not share_file_check.stat.exists
 
-- name: "Format the file to fat32: {{ usb_share_file }} "
+- name: "Format the file to fat32: {{ usb_share_file }}"
   ansible.builtin.command: mkdosfs {{ usb_share_file }} -F 32 -I -n WIFI-USB
   when: not share_file_check.stat.exists
 
