@@ -53,8 +53,11 @@
 
 - name: Ensure python3 is fully installed
   ansible.builtin.package:
-    name: python3-full
+    name: "{{ item }}"
     state: present
+  loop:
+    - python3-full
+    - python3-virtualenv
 
 - name: Install watchdog python library
   ansible.builtin.pip:
