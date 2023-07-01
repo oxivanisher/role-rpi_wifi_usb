@@ -13,14 +13,14 @@
 - name: Enable usb driver in config.txt
   ansible.builtin.lineinfile:
     path: /boot/config.txt
-    regexp: '^dtoverlay=dwc2'
+    regexp: "^dtoverlay=dwc2"
     line: dtoverlay=dwc2
   notify: Reboot required
 
 - name: Automatically load module
   ansible.builtin.lineinfile:
     path: /etc/modules
-    regexp: '^dwc2'
+    regexp: "^dwc2"
     line: dwc2
   notify: Reboot required
 
@@ -49,16 +49,18 @@
     opts: users,umask=000
     state: mounted
 
-- name: Ensure pip3 is installed
+- name: Ensure python3 is fully installed
   ansible.builtin.package:
-    name: python3-pip
+    name: python3-full
     state: present
 
-# this is somehow not working ... installing manually works ?!?
-# - name: Install watchdog python3 lib
-#   ansible.builtin.pip:
-#     name: watchdog
-#     executable: pip3
+- name: Install watchdog python library
+  ansible.builtin.pip:
+    name:
+      - watchdog
+    virtualenv: "{{ usb_share_watchdog_path }}/venv"
+  become: true
+  become_user: "{{ ansible_install_for_user }}"
 
 - name: Ensuring watchdog folder
   ansible.builtin.file:
@@ -74,7 +76,7 @@
     dest: "{{ usb_share_watchdog_path }}/usb_share_watchdog.py"
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
 
 - name: Deploy watchdog systemd service unit
   ansible.builtin.template:
@@ -82,7 +84,7 @@
     dest: /etc/systemd/system/usb_share_watchdog.service
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify: Reload systemd
 
 - name: Enable and start the usb_share_watchdog.service
