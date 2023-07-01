@@ -61,8 +61,6 @@
     name:
       - watchdog
     virtualenv: "{{ usb_share_watchdog_path }}/venv"
-  become: true
-  become_user: "{{ ansible_install_for_user }}"
 
 - name: Ensuring watchdog folder
   ansible.builtin.file:
