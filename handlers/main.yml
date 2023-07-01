@@ -1,5 +1,4 @@
 ---
-
 - name: Reboot required
   ansible.builtin.reboot:
     reboot_timeout: 300
@@ -7,3 +6,9 @@
 - name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: true
+
+- name: Restart usb watchdog
+  ansible.builtin.systemd:
+    name: usb_share_watchdog.service
+    enabled: true
+    state: restarted

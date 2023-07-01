@@ -64,6 +64,7 @@
     name:
       - watchdog
     virtualenv: "{{ usb_share_watchdog_path }}/venv"
+  notify: Restart usb watchdog
 
 - name: Ensuring watchdog folder
   ansible.builtin.file:
@@ -72,6 +73,7 @@
     owner: root
     group: root
     mode: "0755"
+  notify: Restart usb watchdog
 
 - name: Deploy watchdog script
   ansible.builtin.template:
@@ -80,6 +82,7 @@
     owner: root
     group: root
     mode: "0755"
+  notify: Restart usb watchdog
 
 - name: Deploy watchdog systemd service unit
   ansible.builtin.template:
@@ -89,9 +92,3 @@
     group: root
     mode: "0644"
   notify: Reload systemd
-
-- name: Enable and start the usb_share_watchdog.service
-  ansible.builtin.systemd:
-    name: usb_share_watchdog.service
-    enabled: true
-    state: started
