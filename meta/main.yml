@@ -52,4 +52,5 @@ galaxy_info:
     - wifi
 
 dependencies:
-  - role: ansible.posix.mount
+  []
+  # - role: ansible.posix.mount
