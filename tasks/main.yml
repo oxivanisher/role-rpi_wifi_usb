@@ -2,9 +2,14 @@
 # source: https://magpi.raspberrypi.org/articles/pi-zero-w-smart-usb-flash-drive
 
 # ensure mounted boot
+- name: Override config.txt location for Raspberry Pi OS version before bookworm
+  ansible.builtin.set_fact:
+    rpi_wifi_usb_config_dir: /boot
+  when: ansible_distribution_major_version | int < 12
+
 - name: Mount boot
   ansible.posix.mount:
-    path: /boot
+    path: "{{ rpi_wifi_usb_config_dir }}"
     state: mounted
     src: /dev/mmcblk0p1
     fstype: vfat
@@ -12,7 +17,7 @@
 
 - name: Enable usb driver in config.txt
   ansible.builtin.lineinfile:
-    path: /boot/config.txt
+    path: "{{ rpi_wifi_usb_config_dir }}/config.txt"
     regexp: "^dtoverlay=dwc2"
     line: dtoverlay=dwc2
   notify: Reboot required

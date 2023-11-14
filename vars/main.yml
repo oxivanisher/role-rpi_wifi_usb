@@ -1,2 +1,3 @@
 ---
 # vars file for rpi_wifi_usb
+rpi_wifi_usb_config_dir: /boot/firmware
