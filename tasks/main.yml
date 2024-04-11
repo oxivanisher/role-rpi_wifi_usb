@@ -14,6 +14,8 @@
     src: "{{ raspberry_pi_boot_dev }}"
     fstype: vfat
   changed_when: false
+  become: true
+  become_user: root
 
 - name: Enable usb driver in config.txt
   ansible.builtin.lineinfile:
@@ -21,6 +23,8 @@
     regexp: "^dtoverlay=dwc2"
     line: dtoverlay=dwc2
   notify: Reboot required
+  become: true
+  become_user: root
 
 - name: Automatically load module
   ansible.builtin.lineinfile:
@@ -28,6 +32,8 @@
     regexp: "^dwc2"
     line: dwc2
   notify: Reboot required
+  become: true
+  become_user: root
 
 - name: Set usb_share_file variable
   ansible.builtin.set_fact:
@@ -42,11 +48,15 @@
   ansible.builtin.command: fallocate -l {{ usb_share_space }} {{ usb_share_file }}
   when: not share_file_check.stat.exists
   changed_when: true
+  become: true
+  become_user: root
 
 - name: "Format the file to fat32: {{ usb_share_file }}"
   ansible.builtin.command: mkdosfs {{ usb_share_file }} -F 32 -I -n WIFI-USB
   when: not share_file_check.stat.exists
   changed_when: true
+  become: true
+  become_user: root
 
 - name: "Ensure mount {{ usb_share_file }}"
   ansible.posix.mount:
@@ -55,21 +65,25 @@
     fstype: vfat
     opts: users,umask=000
     state: mounted
+  become: true
+  become_user: root
 
 - name: Ensure python3 is fully installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name:
+      - python3-full
+      - python3-virtualenv
     state: present
-  loop:
-    - python3-full
-    - python3-virtualenv
+  become: true
+  become_user: root
 
 - name: Install watchdog python library
   ansible.builtin.pip:
-    name:
-      - watchdog
+    name: watchdog
     virtualenv: "{{ usb_share_watchdog_path }}/venv"
   notify: Restart usb watchdog
+  become: true
+  become_user: root
 
 - name: Ensuring watchdog folder
   ansible.builtin.file:
@@ -79,6 +93,8 @@
     group: root
     mode: "0755"
   notify: Restart usb watchdog
+  become: true
+  become_user: root
 
 - name: Deploy watchdog script
   ansible.builtin.template:
@@ -88,6 +104,8 @@
     group: root
     mode: "0755"
   notify: Restart usb watchdog
+  become: true
+  become_user: root
 
 - name: Deploy watchdog systemd service unit
   ansible.builtin.template:
@@ -97,3 +115,5 @@
     group: root
     mode: "0644"
   notify: Reload systemd
+  become: true
+  become_user: root

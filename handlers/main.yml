@@ -2,13 +2,19 @@
 - name: Reboot required
   ansible.builtin.reboot:
     reboot_timeout: 300
+  become: true
+  become_user: root
 
 - name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: true
+  become: true
+  become_user: root
 
 - name: Restart usb watchdog
   ansible.builtin.systemd:
     name: usb_share_watchdog.service
     enabled: true
     state: restarted
+  become: true
+  become_user: root
