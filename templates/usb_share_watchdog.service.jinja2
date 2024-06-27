@@ -3,7 +3,7 @@ Description=USB Share Watchdog
 
 [Service]
 Type=simple
-ExecStart={{ usb_share_watchdog_path }}/venv/bin/python3 {{ usb_share_watchdog_path }}/usb_share_watchdog.py
+ExecStart={{ rpi_wifi_usb_share_watchdog_path }}/venv/bin/python3 {{ rpi_wifi_usb_share_watchdog_path }}/usb_share_watchdog.py
 Restart=always
 
 [Install]

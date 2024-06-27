@@ -7,11 +7,11 @@ import os
 from watchdog.observers import Observer
 from watchdog.events import *
 
-CMD_MOUNT = "modprobe g_mass_storage file={{ usb_share_file }} stall=0 ro=1 removable=1"
+CMD_MOUNT = "modprobe g_mass_storage file={{ rpi_wifi_usb_share_file }} stall=0 ro=1 removable=1"
 CMD_UNMOUNT = "modprobe -r g_mass_storage"
 CMD_SYNC = "sync"
 
-WATCH_PATH = "{{ usb_share_path }}"
+WATCH_PATH = "{{ rpi_wifi_usb_share_path }}"
 ACT_EVENTS = [DirDeletedEvent, DirMovedEvent, FileDeletedEvent, FileModifiedEvent, FileMovedEvent]
 ACT_TIME_OUT = 30
 
