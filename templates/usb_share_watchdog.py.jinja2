@@ -4,6 +4,18 @@
 
 import time
 import os
+import logging
+
+log_level = logging.INFO
+if os.getenv('DEBUG', False):
+  log_level = logging.DEBUG
+
+logging.basicConfig(
+  format='%(asctime)s %(levelname)-7s %(message)s',
+  datefmt='%Y-%d-%m %H:%M:%S',
+  level=log_level
+)
+
 from watchdog.observers import Observer
 from watchdog.events import *
 
@@ -14,6 +26,22 @@ CMD_SYNC = "sync"
 WATCH_PATH = "{{ rpi_wifi_usb_share_path }}"
 ACT_EVENTS = [DirDeletedEvent, DirMovedEvent, FileDeletedEvent, FileModifiedEvent, FileMovedEvent]
 ACT_TIME_OUT = 30
+
+
+def os_cmd_mount():
+    logging.info("Make {{ rpi_wifi_usb_share_file }} available to USB device (mount)" )
+    os.system(CMD_MOUNT)
+
+
+def os_cmd_unmount():
+    logging.info("Make {{ rpi_wifi_usb_share_file }} unavailable to USB device (unmount)" )
+    os.system(CMD_UNMOUNT)
+
+
+def os_cmd_sync():
+    logging.info("Writing filesystems (sync)" )
+    os.system(CMD_SYNC)
+
 
 class DirtyHandler(FileSystemEventHandler):
     def __init__(self):
@@ -38,7 +66,7 @@ class DirtyHandler(FileSystemEventHandler):
         self._path = None
 
 
-os.system(CMD_MOUNT)
+os_cmd_mount()
 
 evh = DirtyHandler()
 observer = Observer()
@@ -51,11 +79,11 @@ try:
             time_out = time.time() - evh.dirty_time
 
             if time_out >= ACT_TIME_OUT:
-                os.system(CMD_UNMOUNT)
+                os_cmd_unmount()
                 time.sleep(1)
-                os.system(CMD_SYNC)
+                os_cmd_sync()
                 time.sleep(1)
-                os.system(CMD_MOUNT)
+                os_cmd_mount()
                 evh.reset()
 
             time.sleep(1)

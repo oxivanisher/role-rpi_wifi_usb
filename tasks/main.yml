@@ -32,21 +32,21 @@
   become: true
   become_user: root
 
-- name: "Check if file exists: {{ rpi_wifi_usb_share_file }}"
-  ansible.builtin.stat:
-    path: "{{ rpi_wifi_usb_share_file }}"
-  register: share_file_check
-
 - name: "Create the file with size {{ rpi_wifi_usb_share_space }}"
-  ansible.builtin.command: fallocate -l {{ rpi_wifi_usb_share_space }} {{ rpi_wifi_usb_share_file }}
-  when: not share_file_check.stat.exists
-  changed_when: true
+  ansible.builtin.command:
+    argv:
+      - /usr/bin/fallocate
+      - "-l"
+      - "{{ rpi_wifi_usb_share_space }}"
+      - "{{ rpi_wifi_usb_share_file }}"
+    creates: "{{ rpi_wifi_usb_share_file }}"
+  register: imagefile_create
   become: true
   become_user: root
 
-- name: "Format the file to fat32: {{ rpi_wifi_usb_share_file }}"
+- name: "Format the file to fat32: {{ rpi_wifi_usb_share_file }}" # noqa: no-handler
   ansible.builtin.command: mkdosfs {{ rpi_wifi_usb_share_file }} -F 32 -I -n WIFI-USB
-  when: not share_file_check.stat.exists
+  when: imagefile_create.changed
   changed_when: true
   become: true
   become_user: root
