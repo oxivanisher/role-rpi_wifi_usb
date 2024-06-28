@@ -7,4 +7,4 @@ ExecStart={{ rpi_wifi_usb_share_watchdog_path }}/venv/bin/python3 {{ rpi_wifi_us
 Restart=always
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=usb-gadget.target
