@@ -4,11 +4,16 @@
     rpi_wifi_usb_config_dir: /boot
   when: ansible_distribution_major_version | int < 12
 
+- name: Override Raspberry PI boot device default since raspberry_pi_boot_dev is set
+  ansible.builtin.set_fact:
+    rpi_wifi_usb_share_rpi_boot_dev: "{{ raspberry_pi_boot_dev }}"
+  when: raspberry_pi_boot_dev | default('', true) | trim != ''
+
 - name: Mount boot
   ansible.posix.mount:
     path: "{{ rpi_wifi_usb_config_dir }}"
     state: mounted
-    src: "{{ raspberry_pi_boot_dev }}"
+    src: "{{ rpi_wifi_usb_share_rpi_boot_dev }}"
     fstype: vfat
   changed_when: false
   become: true

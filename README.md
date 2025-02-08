@@ -19,7 +19,7 @@ Role Variables
 | rpi_wifi_usb_share_space         | Size of the USB image file                          | `4G`                         |
 | rpi_wifi_usb_share_path          | Mount point of the USB image file                   | `/mnt/wifi_usb_share`        |
 | rpi_wifi_usb_share_watchdog_path | Base path for the watchdog                          | `/opt/rpi_wifi_usb_watchdog` |
-| raspberry_pi_boot_dev            | Raspberry pi boot dev (used for editing config.txt) | `/dev/mmcblk0p1`             |
+| rpi_wifi_usb_share_rpi_boot_dev  | The boot device where the `config.txt` is located. Will be overwritten if `raspberry_pi_boot_dev` is set! | `/dev/mmcblk0p1` |
 
 Example Playbook
 ----------------
