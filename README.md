@@ -1,5 +1,6 @@
 rpi_wifi_usb
 ============
+[![Ansible Lint](https://github.com/oxivanisher/role-rpi_wifi_usb/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/oxivanisher/role-rpi_wifi_usb/actions/workflows/ansible-lint.yml)
 
 This role configures i.e. a Raspberry Pi zero W as a "Wifi USB Drive". It creates a image file which serves as storage for the drive and includes a watchdog which mounts and unmounts the "USB Drive" from the host if files get manipulated over wifi.
 To share this folder, use the [rpi_wifi_usb_smb](https://github.com/oxivanisher/role-rpi_wifi_usb_smb.git) role.
