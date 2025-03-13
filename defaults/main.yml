@@ -1,6 +1,6 @@
 ---
+rpi_wifi_usb_share_rpi_boot_dev: /dev/mmcblk0p1
 rpi_wifi_usb_share_file: /piusb.bin
 rpi_wifi_usb_share_space: 4G
 rpi_wifi_usb_share_path: /mnt/wifi_usb_share
 rpi_wifi_usb_share_watchdog_path: /opt/rpi_wifi_usb_watchdog
-rpi_wifi_usb_share_rpi_boot_dev: /opt/rpi_wifi_usb_watchdog
